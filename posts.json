@@ -1,20 +1,17 @@
 {
   "site": {
-    "title": "Field Notes",
-    "tagline": "Writing, rendered from Markdown"
+    "title": "Blogs, Technical Write-ups, and Research"
+    "tagline": "My page where I showcase my blogs, technical write-ups, and research."
   },
   "posts": [
     {
-      "slug": "hello-world",
-      "title": "Hello, world",
-      "date": "2026-02-14",
-      "excerpt": "How this blog works, and everything you can write in a post."
+      "slug": "auto-bughunter-writeup",
+      "title": "Building auto-bughunter: An AI-Orchestrated Web Application Security Platform",
+      "date": "2026-09-03",
+      "excerpt": "Why and how I worked with GitHub Copiolt to build this platform."
     },
     {
-      "slug": "why-markdown",
-      "title": "Why write in Markdown",
-      "date": "2026-01-20",
-      "excerpt": "A short case for plain text that outlives any editor."
+    
     }
   ]
 }
