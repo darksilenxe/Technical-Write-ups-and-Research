@@ -1,0 +1,20 @@
+{
+  "site": {
+    "title": "Field Notes",
+    "tagline": "Writing, rendered from Markdown"
+  },
+  "posts": [
+    {
+      "slug": "hello-world",
+      "title": "Hello, world",
+      "date": "2026-02-14",
+      "excerpt": "How this blog works, and everything you can write in a post."
+    },
+    {
+      "slug": "why-markdown",
+      "title": "Why write in Markdown",
+      "date": "2026-01-20",
+      "excerpt": "A short case for plain text that outlives any editor."
+    }
+  ]
+}

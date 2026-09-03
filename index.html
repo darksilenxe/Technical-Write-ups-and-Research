@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Field Notes</title>
+  <meta name="description" content="A writing blog that renders Markdown in the browser." />
+
+  <!-- Fonts: Fraunces for display, Newsreader for reading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+
+  <!-- Markdown parsing, sanitizing, and code highlighting (all CDN, work on GitHub Pages) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css" id="hljs-light" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css" id="hljs-dark" disabled />
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="masthead">
+    <a class="masthead-home" href="#/" aria-label="Home">
+      <span class="masthead-title" data-site-title>Field Notes</span>
+      <span class="masthead-tagline" data-site-tagline>Writing, rendered from Markdown</span>
+    </a>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch color theme">
+      <span class="theme-toggle-dot"></span>
+    </button>
+  </header>
+
+  <main id="view" class="view" aria-live="polite">
+    <p class="state">Loading…</p>
+  </main>
+
+  <footer class="colophon">
+    <span>Set in Fraunces &amp; Newsreader.</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
