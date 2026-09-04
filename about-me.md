@@ -7,10 +7,9 @@ title: About Me
 ## Intro
 Hello,
 
-My name is Darksilenxe. I've been in the information security and cybersecurity space 
+My name is Chris a.k.a (Darksilenxe), I've   been in the information security and cybersecurity scene for 6+ years. Welcome to my blog website.
 
-## What I Do
-Describe your focus areas, interests, and the kind of work you do.
+#
 
 ## Why This Site
 Explain what people can expect from your blogs, write-ups, and research posts.
