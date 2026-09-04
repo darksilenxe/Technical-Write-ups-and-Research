@@ -167,6 +167,28 @@ a:hover { color: var(--ink); }
 .state strong { color: var(--ink); font-style: normal; }
 
 /* ---------- Index list ---------- */
+.home-about-cta {
+  margin: 1rem 0 1.25rem;
+}
+
+.home-about-button {
+  display: inline-block;
+  font-family: var(--ui);
+  font-size: 0.95rem;
+  text-decoration: none;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent-ink);
+  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.home-about-button:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
 .post-list { list-style: none; margin: 1rem 0 4rem; padding: 0; }
 
 .post-item {

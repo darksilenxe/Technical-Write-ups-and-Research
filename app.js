@@ -137,7 +137,11 @@ async function renderIndex() {
       </a>
     </li>`).join("");
 
-  view.innerHTML = `<ul class="post-list">${items}</ul>`;
+  view.innerHTML = `
+    <div class="home-about-cta">
+      <a class="home-about-button" href="${aboutPath()}">Read About Me</a>
+    </div>
+    <ul class="post-list">${items}</ul>`;
   document.title = data.site?.title || "Field Notes";
   window.scrollTo(0, 0);
 }
