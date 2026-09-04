@@ -86,12 +86,27 @@ a:hover { color: var(--ink); }
   box-shadow: var(--shadow);
 }
 
+.masthead-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
 .masthead-home {
   text-decoration: none;
   color: var(--ink);
   display: block;
 }
 .masthead-home:hover { color: var(--ink); }
+
+.masthead-about {
+  font-family: var(--ui);
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: var(--muted);
+  margin-top: 0.6rem;
+}
+.masthead-about:hover { color: var(--accent-ink); }
 
 .masthead-title {
   display: block;

@@ -188,11 +188,50 @@ async function renderPost(slug) {
   window.scrollTo(0, 0);
 }
 
+async function renderAbout() {
+  showState("Loading…");
+  let data;
+  try {
+    data = await loadManifest();
+  } catch (_) {
+    showState("Couldn't load the site metadata.");
+    return;
+  }
+
+  let text;
+  try {
+    const res = await fetch(resolveAssetPath("about-me.md"), { cache: "no-cache" });
+    if (!res.ok) throw new Error("about");
+    text = await res.text();
+  } catch (_) {
+    showState(`Couldn't load <strong>about-me.md</strong>. <a href="${BASE_PATH}">Back to all posts</a>.`);
+    return;
+  }
+
+  const { meta, body } = parseFrontMatter(text);
+  const title = meta.title || "About Me";
+
+  view.innerHTML = `
+    <a class="back-link" href="${BASE_PATH}">← All posts</a>
+    <article>
+      <div class="article-head">
+        <h1 class="article-title">${escapeHtml(title)}</h1>
+      </div>
+      <div class="prose">${renderMarkdown(body)}</div>
+    </article>`;
+
+  document.title = `${title} — ${data.site?.title || "Field Notes"}`;
+  window.scrollTo(0, 0);
+}
+
 /* ---------- Router ---------- */
 function route() {
-  const postMatch = /^\/post\/(.+)$/.exec(currentRoutePath());
+  const routePath = currentRoutePath();
+  const postMatch = /^\/post\/(.+)$/.exec(routePath);
   if (postMatch) {
     renderPost(decodeURIComponent(postMatch[1]));
+  } else if (routePath === "/about") {
+    renderAbout();
   } else {
     renderIndex();
   }
@@ -211,6 +250,10 @@ function resolveAssetPath(path) {
 
 function postPath(slug) {
   return `${BASE_PATH}post/${encodeURIComponent(slug)}`;
+}
+
+function aboutPath() {
+  return `${BASE_PATH}about`;
 }
 
 function currentRoutePath() {
@@ -240,8 +283,9 @@ document.addEventListener("click", (event) => {
 
   const relativePath = url.pathname.slice(BASE_PATH.length);
   const isPostRoute = relativePath.startsWith("post/");
+  const isAboutRoute = relativePath === "about";
   const isHomeRoute = relativePath === "";
-  if (!isPostRoute && !isHomeRoute) return;
+  if (!isPostRoute && !isAboutRoute && !isHomeRoute) return;
 
   event.preventDefault();
   history.pushState(null, "", url.pathname);
@@ -256,4 +300,9 @@ function escapeHtml(str) {
 
 window.addEventListener("hashchange", route);
 window.addEventListener("popstate", route);
+
+document.querySelectorAll("[data-about-link]").forEach((link) => {
+  link.setAttribute("href", aboutPath());
+});
+
 route();
