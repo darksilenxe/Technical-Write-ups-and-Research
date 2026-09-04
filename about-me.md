@@ -2,8 +2,16 @@
 title: About Me
 ---
 
-Hi, I’m **Darksilenxe**.
+<!-- Fill out this page with your own details. -->
 
-Welcome to my page for blogs, technical write-ups, and research.  
-I use this space to share what I’m building, what I’m learning, and how I approach engineering and security work.
+## Intro
+Write a short introduction about yourself.
 
+## What I Do
+Describe your focus areas, interests, and the kind of work you do.
+
+## Why This Site
+Explain what people can expect from your blogs, write-ups, and research posts.
+
+## Connect
+Add links or contact points you want to share.
