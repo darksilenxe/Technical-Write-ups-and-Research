@@ -3,7 +3,7 @@
 
    How it works:
    1. Fetch posts/posts.json (the manifest = site info + list of posts).
-   2. Route on the URL hash:  #/  -> index,  #/post/<slug>  -> article.
+   2. Route on site paths: / -> index, /post/<slug> -> article.
    3. Fetch the post's Markdown file, strip optional front matter,
       convert to HTML with marked, sanitize with DOMPurify, and show it.
 
@@ -154,7 +154,7 @@ async function renderPost(slug) {
 
   const entry = data.posts.find((p) => p.slug === slug);
   if (!entry) {
-    showState(`No post named <strong>${escapeHtml(slug)}</strong>. <a href="#/">Back to all posts</a>.`);
+    showState(`No post named <strong>${escapeHtml(slug)}</strong>. <a href="${BASE_PATH}">Back to all posts</a>.`);
     return;
   }
 
@@ -165,7 +165,7 @@ async function renderPost(slug) {
     if (!res.ok) throw new Error("post");
     text = await res.text();
   } catch (_) {
-    showState(`Couldn't load <strong>posts/${escapeHtml(file)}</strong>. <a href="#/">Back to all posts</a>.`);
+    showState(`Couldn't load <strong>posts/${escapeHtml(file)}</strong>. <a href="${BASE_PATH}">Back to all posts</a>.`);
     return;
   }
 
