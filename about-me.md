@@ -5,7 +5,9 @@ title: About Me
 <!-- Fill out this page with your own details. -->
 
 ## Intro
-Write a short introduction about yourself.
+Hello,
+
+My name is Darksilenxe. 
 
 ## What I Do
 Describe your focus areas, interests, and the kind of work you do.
