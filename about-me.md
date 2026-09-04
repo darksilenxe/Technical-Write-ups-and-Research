@@ -7,7 +7,7 @@ title: About Me
 ## Intro
 Hello,
 
-My name is Darksilenxe. 
+My name is Darksilenxe. I've been in the information security and cybersecurity space 
 
 ## What I Do
 Describe your focus areas, interests, and the kind of work you do.
