@@ -7,4 +7,4 @@ All rights reserved. No permission is granted to reuse, copy, modify, or distrib
 
 Please go to my page to read the article.
 
-https://darksilenxe.github.io/Technical-Write-ups-and-Research/post/auto-bughunter-writeup
+https://darksilenxe.github.io/Technical-Write-ups-and-Research/
