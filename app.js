@@ -16,7 +16,8 @@ let manifest = null;
 /* ---------- Theme ---------- */
 const themeToggle = document.getElementById("theme-toggle");
 const savedTheme = localStorage.getItem("theme");
-const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+const prefersDark = colorSchemeQuery.matches;
 setTheme(savedTheme || (prefersDark ? "dark" : "light"));
 
 themeToggle.addEventListener("click", () => {
@@ -25,10 +26,18 @@ themeToggle.addEventListener("click", () => {
   localStorage.setItem("theme", next);
 });
 
+if (!savedTheme) {
+  colorSchemeQuery.addEventListener("change", (event) => {
+    setTheme(event.matches ? "dark" : "light");
+  });
+}
+
 function setTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
   const light = document.getElementById("hljs-light");
   const dark = document.getElementById("hljs-dark");
+  themeToggle.setAttribute("aria-pressed", String(theme === "dark"));
+  themeToggle.setAttribute("title", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
   if (light && dark) {
     light.disabled = theme === "dark";
     dark.disabled = theme !== "dark";
