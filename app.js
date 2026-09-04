@@ -3,7 +3,7 @@
 
    How it works:
    1. Fetch posts/posts.json (the manifest = site info + list of posts).
-   2. Route on the URL hash:  #/  -> index,  #/post/<slug>  -> article.
+   2. Route on site paths: / -> index, /post/<slug> -> article.
    3. Fetch the post's Markdown file, strip optional front matter,
       convert to HTML with marked, sanitize with DOMPurify, and show it.
 
@@ -12,6 +12,8 @@
 
 const view = document.getElementById("view");
 let manifest = null;
+const BASE_PATH = getBasePath();
+restoreRedirectedPath();
 
 /* ---------- Theme ---------- */
 const themeToggle = document.getElementById("theme-toggle");
@@ -88,7 +90,7 @@ function formatDate(iso) {
 /* ---------- Data ---------- */
 async function loadManifest() {
   if (manifest) return manifest;
-  const res = await fetch("posts/posts.json", { cache: "no-cache" });
+  const res = await fetch(resolveAssetPath("posts/posts.json"), { cache: "no-cache" });
   if (!res.ok) throw new Error("manifest");
   manifest = await res.json();
   if (manifest.site) {
@@ -128,7 +130,7 @@ async function renderIndex() {
 
   const items = data.posts.map((p) => `
     <li class="post-item">
-      <a class="post-link" href="#/post/${encodeURIComponent(p.slug)}">
+      <a class="post-link" href="${postPath(p.slug)}">
         <h2 class="post-title">${escapeHtml(p.title || p.slug)}</h2>
         <p class="post-meta">${formatDate(p.date)}</p>
         ${p.excerpt ? `<p class="post-excerpt">${escapeHtml(p.excerpt)}</p>` : ""}
@@ -152,18 +154,18 @@ async function renderPost(slug) {
 
   const entry = data.posts.find((p) => p.slug === slug);
   if (!entry) {
-    showState(`No post named <strong>${escapeHtml(slug)}</strong>. <a href="#/">Back to all posts</a>.`);
+    showState(`No post named <strong>${escapeHtml(slug)}</strong>. <a href="${BASE_PATH}">Back to all posts</a>.`);
     return;
   }
 
   const file = entry.file || `${slug}.md`;
   let text;
   try {
-    const res = await fetch(`posts/${file}`, { cache: "no-cache" });
+    const res = await fetch(resolveAssetPath(`posts/${file}`), { cache: "no-cache" });
     if (!res.ok) throw new Error("post");
     text = await res.text();
   } catch (_) {
-    showState(`Couldn't load <strong>posts/${escapeHtml(file)}</strong>. <a href="#/">Back to all posts</a>.`);
+    showState(`Couldn't load <strong>posts/${escapeHtml(file)}</strong>. <a href="${BASE_PATH}">Back to all posts</a>.`);
     return;
   }
 
@@ -173,7 +175,7 @@ async function renderPost(slug) {
   const mins = readingTime(body);
 
   view.innerHTML = `
-    <a class="back-link" href="#/">← All posts</a>
+    <a class="back-link" href="${BASE_PATH}">← All posts</a>
     <article>
       <div class="article-head">
         <h1 class="article-title">${escapeHtml(title)}</h1>
@@ -188,14 +190,63 @@ async function renderPost(slug) {
 
 /* ---------- Router ---------- */
 function route() {
-  const hash = location.hash.replace(/^#/, "");
-  const postMatch = /^\/post\/(.+)$/.exec(hash);
+  const postMatch = /^\/post\/(.+)$/.exec(currentRoutePath());
   if (postMatch) {
     renderPost(decodeURIComponent(postMatch[1]));
   } else {
     renderIndex();
   }
 }
+
+function getBasePath() {
+  const parts = location.pathname.split("/").filter(Boolean);
+  const first = parts[0];
+  if (!first || first === "post" || first === "posts" || first.includes(".")) return "/";
+  return `/${first}/`;
+}
+
+function resolveAssetPath(path) {
+  return `${BASE_PATH}${path.replace(/^\/+/, "")}`;
+}
+
+function postPath(slug) {
+  return `${BASE_PATH}post/${encodeURIComponent(slug)}`;
+}
+
+function currentRoutePath() {
+  const hash = location.hash.replace(/^#/, "");
+  if (/^\/post\/.+/.test(hash)) return hash;
+
+  const path = location.pathname.startsWith(BASE_PATH)
+    ? location.pathname.slice(BASE_PATH.length - 1)
+    : location.pathname;
+  return path || "/";
+}
+
+function restoreRedirectedPath() {
+  const params = new URLSearchParams(location.search);
+  const redirected = params.get("p");
+  if (!redirected) return;
+  const clean = redirected.startsWith("/") ? redirected : `/${redirected}`;
+  history.replaceState(null, "", `${BASE_PATH}${clean.replace(/^\/+/, "")}`);
+}
+
+document.addEventListener("click", (event) => {
+  const link = event.target.closest("a[href]");
+  if (!link) return;
+
+  const url = new URL(link.href, location.href);
+  if (url.origin !== location.origin || !url.pathname.startsWith(BASE_PATH)) return;
+
+  const relativePath = url.pathname.slice(BASE_PATH.length);
+  const isPostRoute = relativePath.startsWith("post/");
+  const isHomeRoute = relativePath === "";
+  if (!isPostRoute && !isHomeRoute) return;
+
+  event.preventDefault();
+  history.pushState(null, "", url.pathname);
+  route();
+});
 
 function escapeHtml(str) {
   return String(str)
@@ -204,4 +255,5 @@ function escapeHtml(str) {
 }
 
 window.addEventListener("hashchange", route);
+window.addEventListener("popstate", route);
 route();

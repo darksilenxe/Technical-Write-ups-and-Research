@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "Blogs, Technical Write-ups, and Research"
+    "title": "Blogs, Technical Write-ups, and Research",
     "tagline": "My page where I showcase my blogs, technical write-ups, and research."
   },
   "posts": [
@@ -8,10 +8,7 @@
       "slug": "auto-bughunter-writeup",
       "title": "Building auto-bughunter: An AI-Orchestrated Web Application Security Platform",
       "date": "2026-09-03",
-      "excerpt": "Why and how I worked with GitHub Copiolt to build this platform."
-    },
-    {
-    
+      "excerpt": "Why and how I worked with GitHub Copilot to build this platform."
     }
   ]
 }
