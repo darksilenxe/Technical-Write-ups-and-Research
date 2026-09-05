@@ -9,12 +9,13 @@
       "title": "Building auto-bughunter: An AI-Orchestrated Web Application Security Platform",
       "date": "2026-09-03",
       "excerpt": "Why and how I worked with GitHub Copilot to build this platform."
-    },
+    }
+  }
     {
       "slug": "find",
       "title": "Find",
       "data": "2026-09-05",
       "except": "The Linux command series for Offensive security professionals."
     }
-  }
-}
+  
+
