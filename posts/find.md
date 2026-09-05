@@ -1,6 +1,6 @@
 ---
 title: find
-date: 2026-03-01
+date: 2026-09-05
 category: File operations
 security: true
 ---
