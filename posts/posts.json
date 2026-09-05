@@ -13,9 +13,17 @@
   
     {
       "slug": "find",
-      "title": "Find",
+      "title": "find",
       "date": "2026-09-05",
       "excerpt": "The Linux command series for Offensive security professionals."
+    },
+
+    {
+      "slug": "ls",
+      "title": "ls",
+      "date": "2026-09-05"
+      "excerpt": "Linux command for file management"
     }
+  
   ]
 }
