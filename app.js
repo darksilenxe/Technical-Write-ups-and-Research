@@ -243,8 +243,10 @@ function route() {
 
 function getBasePath() {
   const parts = location.pathname.split("/").filter(Boolean);
-  const first = parts[0];
-  if (!first || first === "post" || first === "posts" || first.includes(".")) return "/";
+  const [first, second] = parts;
+  if (!first) return "/";
+  if (first === "post" || first === "about" || first === "posts" || first.includes(".")) return "/";
+  if (second === "post" || second === "about") return `/${first}/`;
   return `/${first}/`;
 }
 
