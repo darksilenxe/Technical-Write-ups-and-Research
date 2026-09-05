@@ -199,12 +199,16 @@ async function renderAbout() {
   }
 
   let text;
-  try {
-    const res = await fetch(resolveAssetPath("about-me.md"), { cache: "no-cache" });
-    if (!res.ok) throw new Error("about");
-    text = await res.text();
-  } catch (_) {
-    showState(`Couldn't load <strong>about-me.md</strong>. <a href="${BASE_PATH}">Back to all posts</a>.`);
+  for (const candidate of ["posts/about-me.md", "about-me.md"]) {
+    try {
+      const res = await fetch(resolveAssetPath(candidate), { cache: "no-cache" });
+      if (!res.ok) continue;
+      text = await res.text();
+      break;
+    } catch (_) {}
+  }
+  if (!text) {
+    showState(`Couldn't load <strong>posts/about-me.md</strong> (or <strong>about-me.md</strong>). <a href="${BASE_PATH}">Back to all posts</a>.`);
     return;
   }
 
