@@ -50,12 +50,6 @@ function setTheme(theme) {
 marked.setOptions({
   gfm: true,
   breaks: false,
-  highlight(code, lang) {
-    if (window.hljs && lang && hljs.getLanguage(lang)) {
-      try { return hljs.highlight(code, { language: lang }).value; } catch (_) {}
-    }
-    return code;
-  },
 });
 
 /* Pull optional YAML-ish front matter (title/date/excerpt) off the top of a file. */
@@ -72,7 +66,26 @@ function parseFrontMatter(text) {
 
 function renderMarkdown(md) {
   const rawHtml = marked.parse(md);
-  return DOMPurify.sanitize(rawHtml);
+  const sanitizedHtml = DOMPurify.sanitize(rawHtml);
+  if (!window.hljs) return sanitizedHtml;
+
+  const template = document.createElement("template");
+  template.innerHTML = sanitizedHtml;
+
+  template.content.querySelectorAll("pre code").forEach((block) => {
+    try {
+      if (Array.from(block.classList).some((c) => c.startsWith("language-"))) {
+        hljs.highlightElement(block);
+      } else {
+        const result = hljs.highlightAuto(block.textContent || "");
+        block.innerHTML = result.value;
+        block.classList.add("hljs");
+        if (result.language) block.classList.add(`language-${result.language}`);
+      }
+    } catch (_) {}
+  });
+
+  return template.innerHTML;
 }
 
 function readingTime(md) {
