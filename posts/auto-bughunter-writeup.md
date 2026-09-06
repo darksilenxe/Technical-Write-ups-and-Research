@@ -1,3 +1,7 @@
+-----
+category: technical write up
+-----
+
 # Building auto-bughunter: An AI-Orchestrated Web Application Security Platform
 
 *A technical write-up of an open-source project I built to explore how far AI-assisted development could take a full web-application security testing pipeline. The platform is for **authorized testing only** — systems you own or have explicit written permission to assess.*
