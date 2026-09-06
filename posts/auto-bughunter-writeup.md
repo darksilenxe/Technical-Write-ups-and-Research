@@ -1,6 +1,6 @@
------
-category: technical write up
------
+---
+category: technical writeup
+---
 
 # Building auto-bughunter: An AI-Orchestrated Web Application Security Platform
 
