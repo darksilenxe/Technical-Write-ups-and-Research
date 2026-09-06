@@ -1,3 +1,8 @@
+---
+category: About me
+---
+
+
 # Automating the Grind: My Path in Offensive Security
 
 Hi — I'm Christopher Norris, an offensive security engineer based in Cheyenne, Wyoming. I break web applications for a living, I build tools to break them faster, and lately I've been obsessed with what happens when you point local AI models at the whole problem.
