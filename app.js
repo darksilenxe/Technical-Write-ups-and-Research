@@ -181,9 +181,7 @@ async function enrichPostWithCategories(post) {
 function extractCategories(meta, entry = {}) {
   const values = [
     ...toCategoryList(meta.category),
-    ...toCategoryList(meta.tags),
     ...toCategoryList(entry.category),
-    ...toCategoryList(entry.tags),
   ];
   const keys = Array.from(new Set(values.map(normalizeCategoryKey).filter(Boolean)));
   return keys.length ? keys : ["uncategorized"];
