@@ -57,11 +57,46 @@ function parseFrontMatter(text) {
   const match = /^---\s*\n([\s\S]*?)\n---\s*\n?/.exec(text);
   if (!match) return { meta: {}, body: text };
   const meta = {};
+  let listKey = null;
   for (const line of match[1].split("\n")) {
+    const listItem = /^\s*-\s*(.+?)\s*$/.exec(line);
+    if (listKey && listItem) {
+      meta[listKey].push(stripWrappingQuotes(listItem[1]));
+      continue;
+    }
+
     const kv = /^([A-Za-z0-9_-]+)\s*:\s*(.*)$/.exec(line.trim());
-    if (kv) meta[kv[1].toLowerCase()] = kv[2].replace(/^["']|["']$/g, "").trim();
+    if (!kv) {
+      listKey = null;
+      continue;
+    }
+
+    const key = kv[1].toLowerCase();
+    const rawValue = kv[2].trim();
+    if (!rawValue) {
+      meta[key] = [];
+      listKey = key;
+      continue;
+    }
+
+    meta[key] = parseFrontMatterValue(rawValue);
+    listKey = null;
   }
   return { meta, body: text.slice(match[0].length) };
+}
+
+function parseFrontMatterValue(rawValue) {
+  const value = stripWrappingQuotes(rawValue);
+  const inlineList = /^\[(.*)\]$/.exec(value);
+  if (!inlineList) return value;
+  return inlineList[1]
+    .split(",")
+    .map((item) => stripWrappingQuotes(item.trim()))
+    .filter(Boolean);
+}
+
+function stripWrappingQuotes(value) {
+  return String(value).replace(/^["']|["']$/g, "").trim();
 }
 
 function renderMarkdown(md) {
@@ -115,11 +150,84 @@ async function loadManifest() {
       document.querySelector("[data-site-tagline]").textContent = manifest.site.tagline;
     }
   }
+  const posts = manifest.posts || [];
+  manifest.posts = await Promise.all(posts.map(enrichPostWithCategories));
   // Newest first.
-  manifest.posts = (manifest.posts || []).slice().sort((a, b) =>
+  manifest.posts = manifest.posts.slice().sort((a, b) =>
     (b.date || "").localeCompare(a.date || "")
   );
+  manifest.categoryIndex = buildCategoryIndex(manifest.posts);
   return manifest;
+}
+
+async function enrichPostWithCategories(post) {
+  const file = post.file || `${post.slug}.md`;
+  let meta = {};
+  try {
+    const res = await fetch(resolveAssetPath(`posts/${file}`), { cache: "no-cache" });
+    if (res.ok) {
+      const text = await res.text();
+      meta = parseFrontMatter(text).meta;
+    }
+  } catch (_) {}
+
+  const categories = extractCategories(meta, post);
+  return {
+    ...post,
+    categories,
+  };
+}
+
+function extractCategories(meta, entry = {}) {
+  const values = [
+    ...toCategoryList(meta.category),
+    ...toCategoryList(meta.tags),
+    ...toCategoryList(entry.category),
+    ...toCategoryList(entry.tags),
+  ];
+  const keys = Array.from(new Set(values.map(normalizeCategoryKey).filter(Boolean)));
+  return keys.length ? keys : ["uncategorized"];
+}
+
+function toCategoryList(value) {
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") return value.split(",").map((v) => v.trim()).filter(Boolean);
+  return [];
+}
+
+function normalizeCategoryKey(value) {
+  const cleaned = String(value || "").trim().replace(/\s+/g, " ");
+  return cleaned ? cleaned.toLowerCase() : "";
+}
+
+function formatCategoryLabel(key) {
+  if (key === "all") return "All";
+  if (key === "uncategorized") return "Uncategorized";
+  return key.split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+}
+
+function buildCategoryIndex(posts) {
+  const counts = new Map();
+  for (const post of posts) {
+    for (const key of post.categories || ["uncategorized"]) {
+      counts.set(key, (counts.get(key) || 0) + 1);
+    }
+  }
+  return Array.from(counts.entries())
+    .map(([key, count]) => ({ key, label: formatCategoryLabel(key), count }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
+
+function getActiveCategory(categoryIndex) {
+  const params = new URLSearchParams(location.search);
+  const requested = normalizeCategoryKey(params.get("category"));
+  if (!requested) return "all";
+  return categoryIndex.some((item) => item.key === requested) ? requested : "all";
+}
+
+function indexPath(category) {
+  if (!category || category === "all") return BASE_PATH;
+  return `${BASE_PATH}?category=${encodeURIComponent(category)}`;
 }
 
 /* ---------- Views ---------- */
@@ -141,7 +249,21 @@ async function renderIndex() {
     return;
   }
 
-  const items = data.posts.map((p) => `
+  const activeCategory = getActiveCategory(data.categoryIndex || []);
+  const visiblePosts = activeCategory === "all"
+    ? data.posts
+    : data.posts.filter((post) => (post.categories || []).includes(activeCategory));
+  const filterItems = [
+    { key: "all", label: "All", count: data.posts.length },
+    ...(data.categoryIndex || []),
+  ]
+    .map((category) => `
+      <a class="category-filter${category.key === activeCategory ? " is-active" : ""}" href="${indexPath(category.key)}">
+        ${escapeHtml(category.label)} <span class="category-filter-count">${category.count}</span>
+      </a>`)
+    .join("");
+
+  const items = visiblePosts.map((p) => `
     <li class="post-item">
       <a class="post-link" href="${postPath(p.slug)}">
         <h2 class="post-title">${escapeHtml(p.title || p.slug)}</h2>
@@ -150,7 +272,10 @@ async function renderIndex() {
       </a>
     </li>`).join("");
 
-  view.innerHTML = `<ul class="post-list">${items}</ul>`;
+  view.innerHTML = `
+    <nav class="category-filters" aria-label="Post categories">${filterItems}</nav>
+    ${visiblePosts.length ? `<ul class="post-list">${items}</ul>` : `<p class="state">No posts in <strong>${escapeHtml(formatCategoryLabel(activeCategory))}</strong> yet.</p>`}
+  `;
   document.title = data.site?.title || "Field Notes";
   window.scrollTo(0, 0);
 }
@@ -307,7 +432,7 @@ document.addEventListener("click", (event) => {
   if (!isPostRoute && !isAboutRoute && !isHomeRoute) return;
 
   event.preventDefault();
-  history.pushState(null, "", url.pathname);
+  history.pushState(null, "", `${url.pathname}${url.search}${url.hash}`);
   route();
 });
 
