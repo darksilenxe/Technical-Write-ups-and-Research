@@ -34,6 +34,13 @@
       "date": "2026-09-08",
       "excerpt": "Linux command to display file contents",
       "category": "File operations"
+    },
+    {
+      "slug": "pentesting-experience-catch22",
+      "title": "The Penetration Testing Catch-22: How Do You Get 3 Years of Experience for an Entry-Level Job?",
+      "date": "2026-09-08",
+      "excerpt": "The experience requirements for entry level pentesting positions"
+      "category": "Blog"
     }
   ]
 }
