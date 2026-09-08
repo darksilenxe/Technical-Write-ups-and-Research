@@ -26,6 +26,14 @@
       "date": "2026-09-05",
       "excerpt": "Linux command for file management",
       "category": "File operations"
+    },
+
+    {
+      "slug": "cat",
+      "title": "cat",
+      "date": "2026-09-08",
+      "excerpt": "Linux command to display file contents",
+      "category": "File operations"
     }
   ]
 }
