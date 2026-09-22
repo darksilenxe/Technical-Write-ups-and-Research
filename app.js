@@ -99,6 +99,8 @@ function stripWrappingQuotes(value) {
   return String(value).replace(/^["']|["']$/g, "").trim();
 }
 
+const SHELL_LANGUAGES = new Set(["bash", "sh", "shell", "zsh", "console", "shellsession"]);
+
 function renderMarkdown(md) {
   const rawHtml = marked.parse(md);
   const sanitizedHtml = DOMPurify.sanitize(rawHtml);
@@ -109,13 +111,26 @@ function renderMarkdown(md) {
 
   template.content.querySelectorAll("pre code").forEach((block) => {
     try {
+      let detectedLanguage = "";
       if (Array.from(block.classList).some((c) => c.startsWith("language-"))) {
         hljs.highlightElement(block);
+        detectedLanguage = Array.from(block.classList)
+          .find((c) => c.startsWith("language-"))
+          ?.replace("language-", "") || "";
       } else {
         const result = hljs.highlightAuto(block.textContent || "");
         block.innerHTML = result.value;
         block.classList.add("hljs");
-        if (result.language) block.classList.add(`language-${result.language}`);
+        if (result.language) {
+          detectedLanguage = result.language;
+          block.classList.add(`language-${result.language}`);
+        }
+      }
+
+      if (SHELL_LANGUAGES.has(detectedLanguage)) {
+        const pre = block.parentElement;
+        pre?.classList.add("shell-block");
+        pre?.setAttribute("data-shell-label", detectedLanguage);
       }
     } catch (_) {}
   });
