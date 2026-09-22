@@ -364,6 +364,12 @@ a:hover { color: var(--ink); }
   --terminal-chrome: var(--shell-bash-chrome);
   --terminal-line: var(--shell-bash-line);
   --terminal-muted: var(--shell-bash-muted);
+  --terminal-ink: #f6f8fa;
+  --terminal-comment: #8b949e;
+  --terminal-string: #a5d6ff;
+  --terminal-keyword: #ff7b72;
+  --terminal-number: #79c0ff;
+  --terminal-built-in: #d2a8ff;
   position: relative;
   background: linear-gradient(180deg, color-mix(in srgb, var(--terminal-surface) 92%, white) 0%, var(--terminal-surface) 100%);
   border-color: var(--terminal-line);
@@ -377,6 +383,10 @@ a:hover { color: var(--ink); }
   --terminal-chrome: var(--shell-powershell-chrome);
   --terminal-line: var(--shell-powershell-line);
   --terminal-muted: var(--shell-powershell-muted);
+  --terminal-string: #8bd5ff;
+  --terminal-keyword: #ffb86b;
+  --terminal-number: #7ee787;
+  --terminal-built-in: #d2a8ff;
 }
 
 .prose pre.shell-block::before {
@@ -413,7 +423,38 @@ a:hover { color: var(--ink); }
 }
 
 .prose pre.shell-block code {
-  color: #f6f8fa;
+  color: var(--terminal-ink);
+}
+
+.prose pre.shell-block .hljs-comment,
+.prose pre.shell-block .hljs-quote {
+  color: var(--terminal-comment);
+}
+
+.prose pre.shell-block .hljs-string,
+.prose pre.shell-block .hljs-regexp,
+.prose pre.shell-block .hljs-variable {
+  color: var(--terminal-string);
+}
+
+.prose pre.shell-block .hljs-keyword,
+.prose pre.shell-block .hljs-selector-tag,
+.prose pre.shell-block .hljs-name,
+.prose pre.shell-block .hljs-section {
+  color: var(--terminal-keyword);
+}
+
+.prose pre.shell-block .hljs-number,
+.prose pre.shell-block .hljs-literal,
+.prose pre.shell-block .hljs-symbol,
+.prose pre.shell-block .hljs-bullet {
+  color: var(--terminal-number);
+}
+
+.prose pre.shell-block .hljs-built_in,
+.prose pre.shell-block .hljs-title,
+.prose pre.shell-block .hljs-attribute {
+  color: var(--terminal-built-in);
 }
 
 /* Tables */
