@@ -99,7 +99,19 @@ function stripWrappingQuotes(value) {
   return String(value).replace(/^["']|["']$/g, "").trim();
 }
 
-const SHELL_LANGUAGES = new Set(["bash", "sh", "shell", "zsh", "console", "shellsession"]);
+const BASH_LANGUAGES = new Set(["bash", "sh", "shell", "zsh", "console", "shellsession"]);
+const POWERSHELL_LANGUAGES = new Set(["powershell", "pwsh", "ps1", "psm1", "psd1"]);
+
+function getTerminalProfile(language) {
+  const normalized = String(language || "").toLowerCase();
+  if (BASH_LANGUAGES.has(normalized)) {
+    return { kind: "bash", label: "Bash" };
+  }
+  if (POWERSHELL_LANGUAGES.has(normalized)) {
+    return { kind: "powershell", label: "PowerShell" };
+  }
+  return null;
+}
 
 function renderMarkdown(md) {
   const rawHtml = marked.parse(md);
@@ -127,10 +139,13 @@ function renderMarkdown(md) {
         }
       }
 
-      if (SHELL_LANGUAGES.has(detectedLanguage)) {
+      const terminalProfile = getTerminalProfile(detectedLanguage);
+      if (terminalProfile) {
         const pre = block.parentElement;
         pre?.classList.add("shell-block");
-        pre?.setAttribute("data-shell-label", detectedLanguage);
+        pre?.classList.add(`shell-block--${terminalProfile.kind}`);
+        pre?.setAttribute("data-shell-kind", terminalProfile.kind);
+        pre?.setAttribute("data-shell-label", terminalProfile.label);
       }
     } catch (_) {}
   });
