@@ -13,10 +13,14 @@
   --accent-ink: #234a3e;
   --line:       #e4e2da;
   --block:      #f0eee6;   /* code + quote background */
-  --shell-surface: #f7f5ef;
-  --shell-chrome:  #ece7db;
-  --shell-line:    #d9d3c5;
-  --shell-muted:   #716957;
+  --shell-bash-surface: #15191d;
+  --shell-bash-chrome:  #20262c;
+  --shell-bash-line:    #2f3942;
+  --shell-bash-muted:   #aab6c3;
+  --shell-powershell-surface: #0f1b32;
+  --shell-powershell-chrome:  #1b2b4a;
+  --shell-powershell-line:    #31476f;
+  --shell-powershell-muted:   #c6d4f0;
   --shell-shadow:  0 18px 34px rgba(27, 26, 23, 0.12);
   --sel:        #cfe2d9;
   --shadow:     0 14px 34px rgba(27, 26, 23, 0.08);
@@ -37,10 +41,14 @@
   --accent-ink: #9ad3bd;
   --line:       #2a2d30;
   --block:      #1f2224;
-  --shell-surface: #171a1d;
-  --shell-chrome:  #202429;
-  --shell-line:    #2f353b;
-  --shell-muted:   #98a2ad;
+  --shell-bash-surface: #11161a;
+  --shell-bash-chrome:  #1b2228;
+  --shell-bash-line:    #29323a;
+  --shell-bash-muted:   #96a5b4;
+  --shell-powershell-surface: #0c1528;
+  --shell-powershell-chrome:  #162340;
+  --shell-powershell-line:    #2b4067;
+  --shell-powershell-muted:   #bdccef;
   --shell-shadow:  0 18px 36px rgba(0, 0, 0, 0.36);
   --sel:        #23433a;
   --shadow:     0 16px 36px rgba(0, 0, 0, 0.34);
@@ -352,12 +360,33 @@ a:hover { color: var(--ink); }
 .prose pre code { background: none; padding: 0; font-size: 0.86rem; }
 
 .prose pre.shell-block {
+  --terminal-surface: var(--shell-bash-surface);
+  --terminal-chrome: var(--shell-bash-chrome);
+  --terminal-line: var(--shell-bash-line);
+  --terminal-muted: var(--shell-bash-muted);
+  --terminal-ink: #f6f8fa;
+  --terminal-comment: #8b949e;
+  --terminal-string: #a5d6ff;
+  --terminal-keyword: #ff7b72;
+  --terminal-number: #79c0ff;
+  --terminal-built-in: #d2a8ff;
   position: relative;
-  background: var(--shell-surface);
-  border-color: var(--shell-line);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--terminal-surface) 92%, white) 0%, var(--terminal-surface) 100%);
+  border-color: var(--terminal-line);
   border-radius: 12px;
   padding-top: 2.6rem;
   box-shadow: var(--shell-shadow);
+}
+
+.prose pre.shell-block--powershell {
+  --terminal-surface: var(--shell-powershell-surface);
+  --terminal-chrome: var(--shell-powershell-chrome);
+  --terminal-line: var(--shell-powershell-line);
+  --terminal-muted: var(--shell-powershell-muted);
+  --terminal-string: #8bd5ff;
+  --terminal-keyword: #ffb86b;
+  --terminal-number: #7ee787;
+  --terminal-built-in: #d2a8ff;
 }
 
 .prose pre.shell-block::before {
@@ -369,12 +398,12 @@ a:hover { color: var(--ink); }
   height: 1.8rem;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 0 1rem 0 4.6rem;
-  border-bottom: 1px solid var(--shell-line);
+  border-bottom: 1px solid var(--terminal-line);
   border-radius: 12px 12px 0 0;
-  background: var(--shell-chrome);
-  color: var(--shell-muted);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--terminal-chrome) 88%, white) 0%, var(--terminal-chrome) 100%);
+  color: var(--terminal-muted);
   font-family: var(--ui);
   font-size: 0.72rem;
   font-weight: 600;
@@ -387,10 +416,45 @@ a:hover { color: var(--ink); }
   position: absolute;
   top: 0.58rem;
   left: 1rem;
-  color: color-mix(in srgb, var(--shell-muted) 70%, transparent);
+  color: color-mix(in srgb, var(--terminal-muted) 70%, transparent);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   line-height: 1;
+}
+
+.prose pre.shell-block code {
+  color: var(--terminal-ink);
+}
+
+.prose pre.shell-block .hljs-comment,
+.prose pre.shell-block .hljs-quote {
+  color: var(--terminal-comment);
+}
+
+.prose pre.shell-block .hljs-string,
+.prose pre.shell-block .hljs-regexp,
+.prose pre.shell-block .hljs-variable {
+  color: var(--terminal-string);
+}
+
+.prose pre.shell-block .hljs-keyword,
+.prose pre.shell-block .hljs-selector-tag,
+.prose pre.shell-block .hljs-name,
+.prose pre.shell-block .hljs-section {
+  color: var(--terminal-keyword);
+}
+
+.prose pre.shell-block .hljs-number,
+.prose pre.shell-block .hljs-literal,
+.prose pre.shell-block .hljs-symbol,
+.prose pre.shell-block .hljs-bullet {
+  color: var(--terminal-number);
+}
+
+.prose pre.shell-block .hljs-built_in,
+.prose pre.shell-block .hljs-title,
+.prose pre.shell-block .hljs-attribute {
+  color: var(--terminal-built-in);
 }
 
 /* Tables */
