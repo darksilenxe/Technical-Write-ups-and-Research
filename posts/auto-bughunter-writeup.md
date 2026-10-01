@@ -4,6 +4,8 @@ category: technical writeup
 
 # Building auto-bughunter: An AI-Orchestrated Web Application Security Platform
 
+[![Architecture diagram of darksilenxe/auto-bughunter](https://gitdiagram.com/darksilenxe/auto-bughunter/diagram.png)](https://gitdiagram.com/darksilenxe/auto-bughunter?utm_source=readme&utm_medium=picture)
+
 *A technical write-up of an open-source project I built to explore how far AI-assisted development could take a full web-application security testing pipeline. The platform is for **authorized testing only** — systems you own or have explicit written permission to assess.*
 
 Repo: `github.com/darksilenxe/auto-bughunter` (MIT-licensed)
